@@ -1,0 +1,12 @@
+:root {
+    --body-color: #E4E9F7;
+    --shell-color: #FFF;
+    --primary-color: #695CFE;
+    --primary-color-light: #F6F5FF;
+    --toggle-color: #DDD;
+    --text-color: #707070;
+    --section-color: #EBF2F2;
+    --bgColor: rgba(0, 0, 0, 0.9);
+    --inputColor: white;
+    --border: rgb(255, 255, 255);
+}
