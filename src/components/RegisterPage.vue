@@ -8,17 +8,17 @@
 
         <div class="form-item">
           <div class="input-wrapper">
-            <input type="text" id="username" v-model="username" placeholder="UserName" required />
+            <input type="text" id="username" v-model="user.name" placeholder="UserName" required />
           </div>
         </div>
         <div class="form-item">
           <div class="input-wrapper">
-            <input type="text" id="account" v-model="account" placeholder="Account" required />
+            <input type="text" id="account" v-model="user.account" placeholder="Account" required />
           </div>
         </div>
         <div class="form-item">
           <div class="input-wrapper">
-            <input type="password" id="password" v-model="password" placeholder="Password" required />
+            <input type="password" id="password" v-model="user.password" placeholder="Password" required />
             <button type="button" id="eyeball" @click="togglePasswordVisibility">
               <div class="eye"></div>
             </button>
@@ -42,29 +42,32 @@
 </template>
 
 <script>
+import {register} from "@/api";
+
 export default {
   data() {
     return {
-      username: '',
-      account: '',
-      password: '',
+      user : {
+        name: '',
+        account: '',
+        password: ''
+      },
       token:'',
       isPasswordVisible: false,
     };
   },
   methods: {
-    handleRegister() {
-      const user = {
-        username: this.username,
-        account: this.account,
-        password: this.password
-      };
+    async handleRegister() {
+      const response = await register(this.user, this.token)
+      if (response.success){
+        localStorage.setItem('token', JSON.stringify(response.data));
+        alert('注册成功');
+        await this.$router.replace('/ArtHome');
+      }else {
+        alert(response.message)
+      }
 
-      // 这里可以添加实际的注册逻辑，例如发送请求到服务器等
-      console.log('Form submitted with:', user);
 
-      // 模拟注册成功后的跳转
-      this.$router.push('/login');
     },
     togglePasswordVisibility() {
       this.isPasswordVisible = !this.isPasswordVisible;
@@ -106,7 +109,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: url('@/assets/login-background.jpg');
+  background-image: url('@/static/img/bg1.png');
   background-size: cover;
 }
 form {

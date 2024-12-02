@@ -1,6 +1,6 @@
 :root {
     --body-color: #E4E9F7;
-    --shell-color: #FFF;
+    --shell-color: #B1D3DC;
     --primary-color: #695CFE;
     --primary-color-light: #F6F5FF;
     --toggle-color: #DDD;
@@ -9,4 +9,7 @@
     --bgColor: rgba(0, 0, 0, 0.9);
     --inputColor: white;
     --border: rgb(255, 255, 255);
+    --background-image: url('@/static/img/bg2.png');
+    --form-color: #FFFFFF;
+    --album-with: 52%;
 }

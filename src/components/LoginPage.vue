@@ -5,15 +5,12 @@
         <a class="protect-font" href="#" @click.prevent>
           <h2>LOGIN</h2>
         </a>
-
         <div class="form-item">
-        
           <div class="input-wrapper">
             <input type="text" id="account" v-model="account" placeholder="Account" required/>
           </div>
         </div>
         <div class="form-item">
-      
           <div class="input-wrapper">
             <input :type="isPasswordVisible ? 'text' : 'password'" id="password" v-model="password" placeholder="Password" required/>
             <button type="button" id="eyeball" @click="togglePasswordVisibility">
@@ -32,7 +29,7 @@
 </template>
 
 <script>
-
+import {login} from "@/api";
 
 export default {
   components: {},
@@ -49,12 +46,18 @@ export default {
       this.isPasswordVisible = !this.isPasswordVisible;
       this.$refs.passwordInput.focus();
     },
-    handleSubmit() {
-      // 处理登录表单提交逻辑
-      console.log('Form submitted with:', { account: this.account, password: this.password });
+    async handleSubmit() {
       // 这里可以添加实际的表单提交逻辑，例如发送请求到服务器等
-      localStorage.setItem('token', this.account);
-      this.$router.replace('/ArtHome');
+      const response = await login({
+        account: this.account, password: this.password
+      })
+      if (response.success){
+        localStorage.setItem('token', JSON.stringify(response.data));
+      }else {
+        alert(response.message);
+      }
+
+      await this.$router.replace('/ArtHome');
     }
 
 
@@ -95,7 +98,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: url('@/assets/login-background.jpg');
+  background-image: url('@/static/img/bg1.png');
   background-size: cover;
 }
 form {
