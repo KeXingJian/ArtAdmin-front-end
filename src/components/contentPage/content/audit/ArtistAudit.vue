@@ -77,7 +77,7 @@
         <td>
           <a href="#" @click.prevent class="to-font">
             <div class="img-box">
-              <img :src="'http://localhost:8080/video/image/1/'+artist.picture.path" :alt="artist.artist">
+              <img :src="url+'video/image/1/'+artist.picture.path" :alt="artist.artist">
             </div>
           </a>
 
@@ -121,12 +121,13 @@
 <script>
 
 import {getArtists, addArtist, updateArtist, deleteArtist} from '@/api';
+import {getURL} from "@/utils";
 
 export default {
   name: "ArtistAudit",
   data() {
     return {
-
+      url:getURL(),
       showMenu: false,
       filter: false,
       isAdd: false,
@@ -177,9 +178,9 @@ export default {
     onFileSelected(event) {
       this.selectedFile = event.target.files[0];
       this.selectedFileName = this.selectedFile ? this.selectedFile.name : '';
-      const maxSize = 500 * 1024; // 500KB
+      const maxSize = 5 * 1024 * 1024;
       if (this.selectedFile && this.selectedFile.size > maxSize) {
-        alert('File size exceeds the maximum limit of 500KB.');
+        alert('File size exceeds the maximum limit of 1MB.');
         this.selectedFile = null;
         this.selectedFileName = '';
         return;

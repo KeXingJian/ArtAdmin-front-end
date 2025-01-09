@@ -1,15 +1,22 @@
 <template>
   <BackgroundPage>
     <div class="main_wrapper">
-      <i class="iconfont icon-fanhui"></i>
+
       <div class="main">
+        <div class="card-head">
+          <div class="fanhui">
+            <p  class="time-text">
+              <i @click="back" class="iconfont icon-fanhui">
+              </i>
+              <span @click="back">返回</span>
+            </p>
+          </div>
+        </div>
         <div class="tv">
           <div class="display_div">
-
             <video class="screen" ref="videoPlayer" controls>
               Your browser does not support the video tag.
             </video>
-
           </div>
           <div class="buttons_div">
             <div class="card">
@@ -111,8 +118,6 @@
             </div>
           </div>
         </div>
-
-
       </div>
     </div>
   </BackgroundPage>
@@ -122,7 +127,8 @@
 
 <script>
 import BackgroundPage from "@/components/contentPage/content/BackgroundPage.vue";
-import {changeVideoStatus, editVideo, getAristSelect, getDictionaryTree, playVideo,} from "@/api";
+import {changeVideoStatus, editVideo, getAristSelect, getDictionaryTree, getTempPass} from "@/api";
+import {getURL} from "@/utils";
 
 export default {
   name: "VideoAuditPage",
@@ -137,8 +143,6 @@ export default {
 
       artistSelect: null,
       selectTree: null,
-
-      videoUrl: '', // 存储视频URL
       videoEdit: {
         uuid: null,
         description: "",
@@ -151,22 +155,20 @@ export default {
           path: null,
           type: "COVER"
         },
-        dictionaries: []
+        dictionaries: [],
+
       },
+
+      url:getURL(),
+      currentPass: null,
     };
   },
-  mounted() {
-    this.loadVideo();
-    this.toSelect();
-    this.getTree()
+  computed: {
+    currentVideoUrl() {
+      return `${this.url}video/playVideo/${this.videoEdit?.uuid}/${this.currentPass}`;
+    }
   },
   methods: {
-    async loadVideo() {
-      const response = await playVideo(this.videoEdit.uuid);
-      // 将Blob对象转换为URL
-      const videoUrl = URL.createObjectURL(response.data);
-      this.$refs.videoPlayer.src = videoUrl;
-    },
     async toSelect() {
       const response = await getAristSelect();
       this.artistSelect = response.data;
@@ -234,7 +236,7 @@ export default {
 
       changeVideoStatus(input);
 
-      this.$router.replace('/ArtAudit/VideoAudit');
+      this.$router.go(-1);
 
     },
 
@@ -248,12 +250,45 @@ export default {
       this.videoEdit.picture.id = video.picture ? video.picture.id : null;
       this.videoEdit.dictionaries = video.dictionaries ? video.dictionaries.map(d => d.id) : [];
     },
+
+    back(){
+      this.$router.go(-1);
+    },
+
+    loadVideo() {
+      const videoPlayer = this.$refs.videoPlayer;
+      videoPlayer.src = this.currentVideoUrl;
+      videoPlayer.load();
+    },
+
+    async getPass() {
+      const response = await getTempPass(this.videoEdit.uuid);
+      if (response.data) {
+        this.currentPass = response.data;
+      }
+    }
+
   },
-  created() {
+  async created() {
     this.updateVideo();
+    await this.getPass()
+    this.loadVideo();
+    await this.toSelect();
+    await this.getTree()
+
+    this.$nextTick(() => {
+      this.$refs.videoPlayer.load(); // 强制重新加载新的视频源
+      this.$refs.videoPlayer.play().catch(error => {
+        console.error('Error attempting to play video:', error);
+      });
+    });
   },
   watch: {
-    '$route.params': 'updateVideo'
+    '$route.params': 'updateVideo',
+    handler: function() {
+      this.updateVideo();
+    },
+    immediate: true,
   },
 }
 </script>
@@ -267,16 +302,9 @@ export default {
 }
 
 .main_wrapper {
+  box-shadow: rgb(0,0,0,0.7) 5px 10px 50px ,rgb(0,0,0,0.7) -5px 0px 250px;
   border-radius: 10px;
-  background-image: linear-gradient(
-      to bottom right,
-      rgba(145, 222, 254, 0.8),
-      rgba(153, 192, 249, 0.8),
-      rgba(189, 182, 236, 0.8),
-      rgba(215, 179, 227, 0.8),
-      rgba(239, 179, 213, 0.8),
-      rgba(249, 188, 204, 0.8)
-  );
+  background-image: var(--shell-color-low);
   width: 90%;
   height: 100vh;
   margin-left: 88px;
@@ -285,36 +313,31 @@ export default {
 .main {
   width: 100%;
   height: 100vh;
-  display: flex;
-  align-items: center;
 }
 
 .tv {
-
   width: 100%;
   height: 80%;
   border-radius: 15px;
-  background-color: #d36604;
   display: flex;
-  border: 2px solid #1d0e01;
-  box-shadow: inset 0.2em 0.2em #e69635;
+  background: var(--tv-color);
 }
 
 .display_div {
+  margin-top: 3px;
+  padding: 5px;
   display: flex;
   border-radius: 15px;
-  box-shadow: 3.5px 3.5px 0px #e69635;
   width: 75%;
   height: 99%;
+  background: var(--tv-inner-color);
 }
 
 
 .screen {
   width: 100%;
   height: 100%;;
-  border: 2px solid #1d0e01;
   background-blend-mode: difference;
-  animation: b 0.2s infinite alternate;
   border-radius: 10px;
   z-index: 99;
   display: flex;
@@ -325,20 +348,14 @@ export default {
   text-align: center;
 }
 
-@keyframes b {
-  100% {
-    background-position: 50% 0, 60% 50%;
-  }
-}
 
 .buttons_div {
   width: 25%;
   align-self: center;
   height: 99%;
   margin-left: 5px;
-  background-color: #e69635;
-  border: 2px solid #1d0e01;
-  padding: 0.6em;
+  background: var(--tv-inner-color);
+  padding: 5px;
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -573,7 +590,6 @@ export default {
   color: black;
   border: none;
 }
-
 .footer svg {
   height: 130%;
   fill: royalblue;
@@ -583,31 +599,25 @@ export default {
   cursor: pointer;
   box-shadow: 0 2px 30px rgba(0, 0, 0, 0.205);
 }
-
 .footer p {
   flex: 1;
   text-align: center;
 }
-
 #file {
   display: none;
 }
-
 .customCheckBoxHolder {
   margin: 5px;
   float: left;
 }
-
 .option-box {
   float: left;
 }
-
 .option-box p {
   font-size: 20px;
   margin-right: 10px;
   line-height: 33px;
 }
-
 .customCheckBox {
   float: left;
   width: fit-content;
@@ -627,13 +637,11 @@ export default {
   outline: none;
   min-width: 55px;
 }
-
 .customCheckBox:hover {
   background-color: #2c2c2c;
   color: white;
   box-shadow: rgba(0, 0, 0, 0.23) 0px -4px 1px 0px inset, rgba(255, 255, 255, 0.17) 0px -1px 1px 0px, rgba(0, 0, 0, 0.17) 0px 2px 4px 1px;
 }
-
 .customCheckBox .inner {
   font-size: 18px;
   font-weight: 900;
@@ -643,56 +651,72 @@ export default {
   transition-property: transform;
   transform: translateY(0px);
 }
-
 .customCheckBox:hover .inner {
   transform: translateY(-2px);
 }
-
 .customCheckBoxWrapper:first-of-type .customCheckBox {
   border-bottom-left-radius: 5px;
   border-top-left-radius: 5px;
   border-right: 0px;
 }
-
 .customCheckBoxWrapper:last-of-type .customCheckBox {
   border-bottom-right-radius: 5px;
   border-top-right-radius: 5px;
   border-left: 0px;
 }
-
 .customCheckBoxInput {
   display: none;
 }
-
 .customCheckBoxInput:checked + .customCheckBoxWrapper .customCheckBox {
   background-color: #2d6737;
   color: white;
   box-shadow: rgba(0, 0, 0, 0.23) 0px -4px 1px 0px inset, rgba(255, 255, 255, 0.17) 0px -1px 1px 0px, rgba(0, 0, 0, 0.17) 0px 2px 4px 1px;
 }
-
 .customCheckBoxInput:checked + .customCheckBoxWrapper .customCheckBox .inner {
   transform: translateY(-2px);
 }
-
 .customCheckBoxInput:checked + .customCheckBoxWrapper .customCheckBox:hover {
   background-color: #34723f;
   box-shadow: rgba(0, 0, 0, 0.26) 0px -4px 1px 0px inset, rgba(255, 255, 255, 0.17) 0px -1px 1px 0px, rgba(0, 0, 0, 0.15) 0px 3px 6px 2px;
 }
-
 .customCheckBoxWrapper .customCheckBox:hover .inner {
   transform: translateY(-2px);
 }
-
-
 .preview {
   width: 100%;
   margin-top: 10px;
   text-align: center;
 }
-
 .preview img {
   width: 100%;
   border: 1px solid #ccc;
   padding: 5px;
+}
+
+.card-head {
+  width: 100%;
+  height: 100px;
+
+  border-radius: 15px 15px 0 0 ;
+
+  display: flex;
+  color: white;
+  justify-content: center;
+  position: relative;
+  flex-direction: column;
+
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  overflow: hidden;
+}
+.time-text {
+  font-size: 40px;
+  margin-top: 0px;
+  margin-left: 15px;
+  font-weight: 600;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+.iconfont{
+  font-size: 40px;
 }
 </style>

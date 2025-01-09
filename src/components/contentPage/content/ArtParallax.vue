@@ -26,9 +26,7 @@ export default {
       this.$refs.parallax.style.backgroundPosition = x;
     }
   },
-  mounted() {
-    console.log(this.$refs.parallax);
-  }
+
 }
 </script>
 

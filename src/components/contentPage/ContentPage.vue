@@ -6,10 +6,10 @@
         <header>
           <div class="image-text">
           <span class="image">
-            <img v-if="this.user!==null" :src="'http://localhost:8080/video/image/2/'+user.picture.path" alt="">
+            <img v-if="this.user!==null" :src="url+'video/image/2/'+user.picture.path" alt="">
           </span>
             <div class="text logo-text">
-              <a href="#" @click.prevent class="to-font">
+              <a href="#" @click.prevent="toAbout" class="to-font">
                 <span class="name">KXJ FOR</span>
                 <span class="software">-ART-</span>
               </a>
@@ -50,8 +50,11 @@
       </nav>
       <div>
         <AtrParallax v-if="this.$route.path==='/'"></AtrParallax>
-        <router-view >
-        </router-view>
+        <keep-alive  include="ArtAudit">
+          <router-view>
+          </router-view>
+        </keep-alive>
+
       </div>
 
 
@@ -63,7 +66,7 @@
 <script>
 import AtrParallax from "@/components/contentPage/content/ArtParallax.vue";
 import {getSimpleUserInfo, logout} from "@/api";
-import {getAccount, getRole} from "@/utils";
+import {getAccount, getRole, getURL} from "@/utils";
 
 
 
@@ -71,6 +74,7 @@ export default {
   components: {AtrParallax},
   data() {
     return {
+      url:getURL(),
       user:null,
       isShellClose: true,
       darkMode: false,
@@ -84,6 +88,7 @@ export default {
       ],
     };
   },
+
 
   methods: {
     toggleShell() {
@@ -101,6 +106,10 @@ export default {
     check(){
       const token = localStorage.getItem('token');
       this.menuLinks[4].isPass = (getRole(token)==='root' || getRole(token)==='admin');
+    },
+    toAbout(){
+       this.$router.push('/aboutPage');
+
     }
   },
   computed: {
@@ -135,16 +144,46 @@ export default {
   background-color: var(--body-color);
   transition: all 0.3s ease;
 }
-/* 深色主题变量 */
+
 .dark {
   --body-color: #202224;
-  --shell-color: #201B2B;
+  --shell-color: linear-gradient(
+      to bottom right,
+      rgba(0, 19, 47, 0.8),
+      rgba(13,36,59, 0.8),
+      rgba(15,44,72, 0.8),
+      rgba(23,72,82, 0.8),
+      rgba(26,106,124, 0.8),
+      rgba(23,124,144, 0.8)
+  );
+  --shell-color-low: linear-gradient(
+      to bottom right,
+      rgba(0, 19, 47, 0.3),
+      rgba(13,36,59, 0.3),
+      rgba(15,44,72, 0.3),
+      rgba(23,72,82, 0.3),
+      rgba(26,106,124, 0.3),
+      rgba(23,124,144, 0.3)
+  );
+  --shell-color-high: linear-gradient(
+      to bottom right,
+      rgba(0, 19, 47),
+      rgba(13,36,59),
+      rgba(15,44,72),
+      rgba(23,72,82),
+      rgba(26,106,124),
+      rgba(23,124,144)
+  );
   --primary-color: #3a3b3c;
   --primary-color-light: #3a3b3c;
   --toggle-color: #fff;
   --text-color: #ccc;
   --section-color: #1B1F23;
-  --background-image: url('@/static/img/bg1.png');
+  --background-image: url('@/static/img/bg6.jpg');
+  --me-bg: url('@/static/img/bg8.jpg');
+  --theme-color: rgba(0, 19, 47);
+  --tv-color:  rgba(15,44,72),;
+  --tv-inner-color:  rgba(23,124,144);
 
 }
 .shell {
@@ -334,7 +373,7 @@ li.search-box input {
   top: 50%;
   left: 5px;
   transform: translateY(-50%);
-  background-color: var(--shell-color);
+  background-color: var(--theme-color);
   transition: all 0.3s ease;
 }
 body.dark .shell li a:hover .icon,

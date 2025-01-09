@@ -73,7 +73,7 @@
               <el-pagination
                   layout="prev, pager, next"
                   :total=this.total
-                  :page-size="24"
+                  :page-size="16"
                   :current-page=this.currentPage
                   @current-change="handlePageChange"
               ></el-pagination>
@@ -93,6 +93,7 @@
 
 import BackgroundPage from "@/components/contentPage/content/BackgroundPage.vue";
 import {getDictionaryTree, getUserVideos, getVideosByLabel, searchVideoByUser} from "@/api";
+import {getURL} from "@/utils";
 
 
 export default {
@@ -118,9 +119,9 @@ export default {
 
       let response = null
       if (this.dictionaries!==null && this.dictionaries.length>0){
-        response = await getVideosByLabel(this.currentPage,24,this.dictionaries);
+        response = await getVideosByLabel(this.currentPage,16,this.dictionaries);
       }else {
-        response=await getUserVideos(this.currentPage, 24);
+        response=await getUserVideos(this.currentPage, 16);
       }
 
       // 使用 map 方法遍历数组，并为每个对象添加 isCurrent 属性
@@ -158,7 +159,7 @@ export default {
         }))
         this.total=1
       }else {
-        response = await getVideosByLabel(1,24,this.dictionaries);
+        response = await getVideosByLabel(1,16,this.dictionaries);
         this.videos= response.data.rows.map(video => ({
           ...video,
           isCurrent: false
@@ -169,12 +170,12 @@ export default {
       console.log(this.dictionaries)
     },
     getImageUrl(uuid) {
-      return `http://localhost:8080/video/image/3/${uuid}`;
+      return getURL()+`video/image/3/${uuid}`;
     },
   },
   async mounted() {
     await this.getTree();
-    const response = await getUserVideos(1, 24);
+    const response = await getUserVideos(1, 16);
     console.log(response);
     if (response.success) {
       this.videos = response.data.rows.map(video => ({
@@ -205,15 +206,7 @@ export default {
   margin-left: 88px;
   height: 100vh;
   width: 90%;
-  background-image: linear-gradient(
-      to bottom right,
-      rgba(145, 222, 254, 0.8),
-      rgba(153, 192, 249, 0.8),
-      rgba(189, 182, 236, 0.8),
-      rgba(215, 179, 227, 0.8),
-      rgba(239, 179, 213, 0.8),
-      rgba(249, 188, 204, 0.8)
-  );
+  background-image: var(--shell-color-low);
   overflow: auto;
 }
 .header-card {
@@ -225,7 +218,7 @@ export default {
   box-shadow: 15px 15px 30px #bebebe,
   -15px -15px 30px #ffffff;
   transition: 0.2s ease-in-out;
-  background: linear-gradient(#e66465, #9198e5);
+  background: var(--shell-color-high);
 }
 
 @keyframes box {

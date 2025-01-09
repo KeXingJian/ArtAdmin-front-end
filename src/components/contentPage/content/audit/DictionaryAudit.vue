@@ -11,57 +11,6 @@
                   <span>PARENT</span>
                   <label>
                     <select class="artist-select">
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-                      <option>1</option>
-
                     </select>
                   </label>
                 </div>

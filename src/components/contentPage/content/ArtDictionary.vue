@@ -239,6 +239,7 @@
 <script>
 import BackgroundPage from "@/components/contentPage/content/BackgroundPage.vue";
 import {getPublicCollection} from "@/api";
+import {getURL} from "@/utils";
 
 export default {
   name: "ArtDictionary",
@@ -251,7 +252,7 @@ export default {
   },
   methods:{
     getImageUrl(uuid) {
-      return `http://localhost:8080/video/image/3/${uuid}`;
+      return getURL()+`video/image/3/${uuid}`;
     },
     toCollection(videos) {
       if (videos.length === 0){
@@ -294,15 +295,7 @@ export default {
   margin-left: 88px;
   height: 100vh;
   width: 90%;
-  background-image: linear-gradient(
-      to bottom right,
-      rgba(145, 222, 254, 0.8),
-      rgba(153, 192, 249, 0.8),
-      rgba(189, 182, 236, 0.8),
-      rgba(215, 179, 227, 0.8),
-      rgba(239, 179, 213, 0.8),
-      rgba(249, 188, 204, 0.8)
-  );
+  background-image: var(--shell-color-low);
 }
 
 .main{
@@ -322,7 +315,7 @@ export default {
   box-shadow: 15px 15px 30px #bebebe,
   -15px -15px 30px #ffffff;
   transition: 0.2s ease-in-out;
-  background: linear-gradient(#e66465, #9198e5);
+  background: var(--shell-color-high);
 }
 .font{
   margin-top: 50px;

@@ -20,6 +20,7 @@ import VideoPlayPage from "@/components/contentPage/content/VideoPlayPage.vue";
 import VideoAuditPage from "@/components/contentPage/content/VideoAuditPage.vue";
 import {getRole} from "@/utils";
 import { isNavigationFailure } from 'vue-router';
+import AboutPage from "@/components/AboutPage.vue";
 
 
 Vue.use(VueRouter);
@@ -136,6 +137,12 @@ const routes = [
         meta: {requiresAuth: false},
     },
     {
+        path: '/aboutPage',
+        name: 'aboutPage',
+        component: AboutPage,
+        meta: {requiresAuth: false},
+    },
+    {
         path: '/errPage',
         name: 'errPage',
         component: ErrPage,
@@ -169,7 +176,6 @@ router.beforeEach((to, from, next) => {
 });
 router.onError(error => {
     if (isNavigationFailure(error, NavigationFailureType.duplicated)) {
-
         return;
     }
 

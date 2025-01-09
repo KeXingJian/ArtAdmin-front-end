@@ -9,3 +9,6 @@ export function getAccount(token) {
     const sub = JSON.parse(atob(strings[1])).sub;
     return sub.toString().split('$')[0].replace("user:",'');
 }
+export function getURL() {
+    return 'http://localhost:8080/';
+}

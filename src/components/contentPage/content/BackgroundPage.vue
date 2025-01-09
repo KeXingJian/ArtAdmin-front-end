@@ -20,12 +20,11 @@ export default {
 .page {
   cursor: pointer; /* 改变鼠标指针形状 */
   width: 100%;
-  min-height: 100vh;
+  height: 100vh;
   background: var(--background-image) center / cover;
   display: flex;
   justify-content: center;
   align-items: center;
-
 }
 
 </style>

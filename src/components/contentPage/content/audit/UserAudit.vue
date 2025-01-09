@@ -23,7 +23,7 @@
         </td>
         <td>
           <a href="#" @click.prevent class="to-font">
-            <img :src="'http://localhost:8080/video/image/2/'+user.picture.path" :alt="user.name">
+            <img :src="url+'video/image/2/'+user.picture.path" :alt="user.name">
           </a>
 
         </td>
@@ -73,11 +73,13 @@
 
 <script>
 import {changeLockUser, getUsers} from "@/api";
+import {getURL} from "@/utils";
 
 export default {
   name: "UserAudit",
   data() {
     return {
+      url:getURL(),
       users:null
     };
   },

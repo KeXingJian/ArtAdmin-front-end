@@ -110,7 +110,7 @@
                 <td>
                   <a href="#" @click.prevent class="to-font">
                     <div class="img-box">
-                      <img v-if="video.picture!==null" :src="'http://localhost:8080/video/image/3/'+ video.picture.path" :alt="video.uuid">
+                      <img v-if="video.picture!==null" :src="url+'video/image/3/'+ video.picture.path" :alt="video.uuid">
                     </div>
                   </a>
 
@@ -149,11 +149,13 @@ import {
   deleteCollection,
   deleteVideoCollection
 } from "@/api";
+import {getURL} from "@/utils";
 
 export default {
   name: "CollectionAudit",
   data() {
     return {
+      url:getURL(),
       isAdd: false,
       isEdit: false,
       isAddVideo: false,

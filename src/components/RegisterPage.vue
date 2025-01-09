@@ -1,25 +1,37 @@
 <template>
   <div class="container" :class="{ 'show-password': isPasswordVisible }">
+    <div v-if="isLoading" class="loading animate__animated animate__bounceInDown">
+      <div class="card">
+        <span class="card__title">友情提示</span>
+        <p class="card__content">
+          你是否已经有token,如果没有请前往关于页面
+        </p>
+        <form class="card__form">
+          <button class="card__button" @click.prevent="confirm">关于</button>
+          <button class="card__button" @click.prevent="isLoading=false">已有token</button>
+        </form>
+      </div>
+    </div>
     <div class="shell">
-      <form @submit.prevent="handleRegister">
+      <form class="form-form" @submit.prevent="handleRegister">
         <a class="protect-font" href="#" @click.prevent>
-          <h2>REGISTRATION</h2>
+          <h2 class="h2-form">REGISTRATION</h2>
         </a>
 
         <div class="form-item">
           <div class="input-wrapper">
-            <input type="text" id="username" v-model="user.name" placeholder="UserName" required />
+            <input class="input-form" type="text" id="username" v-model="user.name" placeholder="UserName" required />
           </div>
         </div>
         <div class="form-item">
           <div class="input-wrapper">
-            <input type="text" id="account" v-model="user.account" placeholder="Account" required />
+            <input class="input-form" type="text" id="account" v-model="user.account" placeholder="Account" required />
           </div>
         </div>
         <div class="form-item">
           <div class="input-wrapper">
-            <input type="password" id="password" v-model="user.password" placeholder="Password" required />
-            <button type="button" id="eyeball" @click="togglePasswordVisibility">
+            <input class="input-form" :type="isPasswordVisible ? 'text' : 'password'" id="password" v-model="user.password" placeholder="Password" required />
+            <button class="button-form" type="button" id="eyeball" @click="togglePasswordVisibility">
               <div class="eye"></div>
             </button>
             <div id="beam"></div>
@@ -27,11 +39,10 @@
         </div>
         <div class="form-item">
           <div class="input-wrapper">
-            <input type="text" id="token" v-model="token" placeholder="Token" required />
+            <input class="input-form" type="text" id="token" v-model="token" placeholder="Token" required />
           </div>
-
         </div>
-        <button id="submit" type="submit">register</button>
+        <button class="button-form" id="submit" type="submit">register</button>
         <p class="login-link">
           <router-link to="/loginPage">Already have an account? Go and log in</router-link>
         </p>
@@ -54,6 +65,7 @@ export default {
       },
       token:'',
       isPasswordVisible: false,
+      isLoading: true,
     };
   },
   methods: {
@@ -73,6 +85,9 @@ export default {
       this.isPasswordVisible = !this.isPasswordVisible;
       this.$refs.passwordInput.focus();
     },
+    confirm(){
+      this.$router.replace('/aboutPage');
+    }
   }
 };
 </script>
@@ -84,10 +99,9 @@ export default {
   margin: 0;
   padding: 0;
 }
-
-
-
 .container {
+  user-select: none;
+  cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -95,24 +109,24 @@ export default {
   overflow: hidden;
   background: var(--bgColor);
 }
-
 .show-password {
   --bgColor: white;
   --border: black;
   --inputColor: black;
   --outlineColor: rgb(60, 115, 235);
+  --background-image: url('@/static/img/bg6.jpg');
 }
-
 .shell {
   width: 100%;
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: url('@/static/img/bg1.png');
+  background-image: var(--background-image);
   background-size: cover;
+  background-position: left bottom; /* 背景图片从左下角开始 */
 }
-form {
+.form-form {
   transform: translate3d(0, 0, 0);
   height: 592px;
   width: 600px;
@@ -121,51 +135,42 @@ form {
   border-radius: 10px;
   box-shadow: 10px 10px 10px #00000065;
 }
-
 form>*+* {
   margin-top: 15px;
 }
-
 .form-item>*+* {
   margin-top: 0.5rem;
 }
+.h2-form,
 
-h2,
-label,
-input,
-button {
+.input-form,
+.button-form {
   font-size: 2rem;
   font-family: serif;
   color: var(--inputColor);
 }
-
-h2 {
+.h2-form {
   font-size: 4rem;
   margin: 0;
 }
 
-label:focus,
-input:focus,
-button:focus {
+.input-form:focus,
+.button-form:focus {
   outline-offset: 2px;
 }
 
-label::-moz-focus-inner,
-input::-moz-focus-inner,
-button::-moz-focus-inner {
+.input-form::-moz-focus-inner,
+.button-form::-moz-focus-inner {
   border: none;
 }
 
-label[id=password],
-input[id=password],
-button[id=password] {
+.input-form[id=password],
+.button-form[id=password] {
   color: black;
 }
-
-button {
+.button-form {
   border: none;
 }
-
 [id=submit] {
   cursor: pointer;
   width: 100%;
@@ -175,16 +180,13 @@ button {
   background-color: var(--inputColor);
   box-shadow: 4px 4px 0 rgba(30, 144, 255, 0.2);
 }
-
 [id=submit]:active {
   transform: translateY(1px);
 }
-
 .input-wrapper {
   position: relative;
 }
-
-input {
+.input-form {
   padding: 0.50rem 4rem 0.75rem 0.75rem;
   width: 100%;
   border: 2px solid transparent;
@@ -193,8 +195,7 @@ input {
   box-shadow: inset 0 0 0 2px black, inset 6px 6px 0 rgba(30, 144, 255, 0.2), 3px 3px 0 rgba(30, 144, 255, 0.2);
   -webkit-appearance: none;
 }
-
-input:focus {
+.input-form:focus {
   outline-offset: 1px;
 }
 
@@ -202,12 +203,10 @@ input:focus {
   box-shadow: inset 0 0 0 2px black;
   border: 2px dashed white;
 }
-
 .show-password input:focus {
   outline: none;
   border-color: rgb(255, 255, 145);
 }
-
 [id=eyeball] {
   --size: 1.25rem;
   display: flex;
@@ -222,19 +221,16 @@ input:focus {
   background-color: transparent;
   transform: translateY(-50%);
 }
-
 [id=eyeball]:active {
   transform: translateY(calc(-50% + 1px));
 }
-
 .eye {
   width: var(--size);
   height: var(--size);
-  border: 2px solid var(--inputColor);
+  border: 2px solid black;
   border-radius: calc(var(--size) / 1.5) 0;
   transform: rotate(45deg);
 }
-
 .eye:before,
 .eye:after {
   content: "";
@@ -246,20 +242,17 @@ input:focus {
   margin: auto;
   border-radius: 100%;
 }
-
 .eye:before {
   width: 35%;
   height: 35%;
-  background-color: var(--inputColor);
+  background-color: black;
 }
-
 .eye:after {
   width: 65%;
   height: 65%;
-  border: 2px solid var(--inputColor);
+  border: 2px solid black;
   border-radius: 100%;
 }
-
 [id=beam] {
   position: absolute;
   top: 51%;
@@ -274,28 +267,147 @@ input:focus {
   transform: translateY(-50%);
   pointer-events: none;
 }
-
 .show-password [id=beam] {
   background: rgb(255, 255, 145);
 }
-
 .login-link {
   text-align: center;
   margin-top: 20px;
 }
-
 .login-link a {
   color: var(--inputColor);
   text-decoration: none;
   font-size: 1.5rem;
 }
-
 .login-link a:hover {
   text-decoration: underline;
 }
-
 .protect-font{
   text-decoration: none;
+}
+
+
+.card {
+  margin-bottom: 130%;
+  width: 430px;
+  height: 290px;
+  padding: 20px;
+  background: #fff;
+  border: 6px solid #000;
+  box-shadow: 12px 12px 0 #000;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.card:hover {
+  transform: translate(-5px, -5px);
+  box-shadow: 17px 17px 0 #000;
+}
+.card__title {
+  font-size: 32px;
+  font-weight: 900;
+  color: #000;
+  text-transform: uppercase;
+  margin-bottom: 15px;
+  display: block;
+  position: relative;
+  overflow: hidden;
+}
+.card__title::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 90%;
+  height: 3px;
+  background-color: #000;
+  transform: translateX(-100%);
+  transition: transform 0.3s;
+}
+.card:hover .card__title::after {
+  transform: translateX(0);
+}
+.card__content {
+  font-size: 16px;
+  line-height: 1.4;
+  color: #000;
+  margin-bottom: 20px;
+}
+.card__form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.card__form input {
+  padding: 10px;
+  border: 3px solid #000;
+  font-size: 16px;
+  font-family: inherit;
+  transition: transform 0.3s;
+  width: calc(100% - 26px); /* Adjust for padding and border */
+}
+.card__form input:focus {
+  outline: none;
+  transform: scale(1.05);
+  background-color: #000;
+  color: #ffffff;
+}
+.card__button {
+  border: 3px solid #000;
+  background: #000;
+  color: #fff;
+  padding: 10px;
+  font-size: 18px;
+  left: 20%;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s;
+  width: 50%;
+  height: 100%;
+}
+.card__button::before {
+  content: "Sure?";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 105%;
+  background-color: #5ad641;
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(100%);
+  transition: transform 0.3s;
+}
+.card__button:hover::before {
+  transform: translateY(0);
+}
+.card__button:active {
+  transform: scale(0.95);
+}
+@keyframes glitch {
+  0% {
+    transform: translate(2px, 2px);
+  }
+  25% {
+    transform: translate(-2px, -2px);
+  }
+  50% {
+    transform: translate(-2px, 2px);
+  }
+  75% {
+    transform: translate(2px, -2px);
+  }
+  100% {
+    transform: translate(2px, 2px);
+  }
+}
+.loading{
+
+  position: absolute;
+  z-index: 999;
 }
 
 </style>

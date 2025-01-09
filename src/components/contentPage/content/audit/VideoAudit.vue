@@ -108,7 +108,7 @@
         <td><a href="#" @click.prevent class="to-font">{{ video.uuid }}</a></td>
         <td>
           <a href="#" @click.prevent class="to-font">
-            <img v-if="video.picture && video.picture.path" :src="'http://localhost:8080/video/image/3/' + video.picture.path"
+            <img v-if="video.picture && video.picture.path" :src="url+'video/image/3/' + video.picture.path"
                  :alt="video.artist ? video.artist.name : 'null'">
             <span v-else>No Cover</span>
           </a>
@@ -156,7 +156,7 @@
           <el-pagination
               layout="prev, pager, next"
               :total=this.total
-              :page-size='24'
+              :page-size='16'
               :current-page=this.currentPage
               @current-change="handlePageChange"
           ></el-pagination>
@@ -168,6 +168,7 @@
 </template>
 <script>
 import {getAdminVideos, getAristSelect, getDictionaryTree, editVideo, searchVideo, changeVideoStatus} from '@/api';
+import {getURL} from "@/utils";
 
 export default {
   name: "VideoAudit",
@@ -175,6 +176,7 @@ export default {
 
   data() {
     return {
+      url: getURL(),
       showMenu: false,
       filter: false,
       isEdit: false,
@@ -186,7 +188,7 @@ export default {
       selectedFile: null,
       selectedFileName: '',
       isSelected: false,
-      value:-1,
+      value: -1,
 
       artistSelect: null,
       selectTree: null,
@@ -210,18 +212,19 @@ export default {
   },
 
 
-
   methods: {
     async handlePageChange(page) {
       this.currentPage = page;
-      const response = await getAdminVideos(this.currentPage, 24,this.value);
+      const response = await getAdminVideos(this.currentPage, 16, this.value);
       this.videos = response.data.rows;
       this.total = response.data.totalRowCount
     },
 
     async toFilter(value) {
+
       this.value = value
-      const response = await getAdminVideos(this.currentPage, 24, this.value);
+
+      const response = await getAdminVideos(this.currentPage, 16, this.value);
       this.videos = response.data.rows;
       this.total = response.data.totalRowCount
     },
@@ -312,14 +315,14 @@ export default {
 
     toAudit(video) {
       this.$router.push({
-        name:'VideoAuditPage',
-        params:{
-            param1: video
+        name: 'VideoAuditPage',
+        params: {
+          param1: video
         }
       });
     },
 
-    changeStatus(video,status){
+    changeStatus(video, status) {
       video.status = status;
       changeVideoStatus(video);
     },
@@ -352,7 +355,7 @@ export default {
       };
       formData.append('editVideo', JSON.stringify(videoEditDto));
 
-      const response = editVideo(formData);
+      const response = await editVideo(formData);
       console.log(response.success)
       alert('视频编辑成功！');
       this.closeEdit();
@@ -362,16 +365,16 @@ export default {
 
   },
   async mounted() {
-      const response = await getAdminVideos(1, 24,-1);
-      await this.toSelect();
-      await this.getTree();
-      if (response.success) {
-        this.videos = response.data.rows;
-        this.total = response.data.totalRowCount
+    const response = await getAdminVideos(1, 16, -1);
+    await this.toSelect();
+    await this.getTree();
+    if (response.success) {
+      this.videos = response.data.rows;
+      this.total = response.data.totalRowCount
 
-      } else {
-        console.error('Error fetching videos:', response.message);
-      }
+    } else {
+      console.error('Error fetching videos:', response.message);
+    }
   },
   created() {
     this.$bus.$on('toFilter', this.toFilter)

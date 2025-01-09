@@ -206,7 +206,6 @@ main.table {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
   border-radius: 16px;
   overflow: hidden;
-
 }
 .header {
   width: 100%;
@@ -222,7 +221,6 @@ main.table {
   height: 48px;
   display: flex;
   justify-content: space-evenly;
-
   position: relative;
 }
 .box {

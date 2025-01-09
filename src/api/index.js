@@ -15,6 +15,10 @@ apiClient.interceptors.request.use(config => {
     if (token) {
         config.headers['token'] = token;
     }
+    // 只有当请求不是媒体类型时才设置'Content-Type'
+    if (!config.headers['Content-Type']) {
+        config.headers['Content-Type'] = 'application/json';
+    }
     return config;
 }, error => {
     return Promise.reject(error);
@@ -44,6 +48,8 @@ apiClient.interceptors.response.use(
 
             router.replace('/loginPage');
 
+        }else if (error.response && error.response.status === 408) {
+            alert("临时令牌已过期,请再次拉取视频")
         }
         return Promise.reject(error);
     }
@@ -90,20 +96,6 @@ export const getUserVideos = async (index, size) => {
     }
 };
 
-export const playUserVideo = async (uuid, rangeHeader) => {
-    try {
-        return await apiClient.get(`/video/playUserVideo/${uuid}`,
-            {
-                responseType: 'blob', // 设置响应类型为blob
-                headers: {
-                    'Range': rangeHeader || 'bytes=0-', // 初始请求范围
-                }
-            });
-    } catch (error) {
-        console.log('请求错误');
-    }
-};
-
 export const searchVideoByUser = async (uuid) => {
     try {
         const response = await apiClient.get(`/video/searchByUser/${uuid}`);
@@ -122,21 +114,6 @@ export const getVideosByLabel = async (index, size, labels) => {
     }
 };
 
-export const playVideo = async (uuid, rangeHeader) => {
-    try {
-        return await apiClient.get(`/video/playVideo/${uuid}`,
-            {
-                responseType: 'blob', // 设置响应类型为blob
-                headers: {
-                    'Range': rangeHeader || 'bytes=0-', // 初始请求范围
-                }
-
-            });
-    } catch (error) {
-        console.log('请求错误');
-    }
-};
-
 export const getAdminVideos = async (index, size, value) => {
     try {
         const response = await apiClient.get(`/video/getByStatus/${index}/${size}/${value}`);
@@ -149,6 +126,15 @@ export const getAdminVideos = async (index, size, value) => {
 export const loading = async () => {
     try {
         const response = await apiClient.get('/video/loading');
+        return response.data;
+    } catch (error) {
+        console.log('请求错误');
+    }
+};
+
+export const getTempPass = async (uuid) => {
+    try {
+        const response = await apiClient.get(`/video/getTempPass/${uuid}`);
         return response.data;
     } catch (error) {
         console.log('请求错误');
@@ -416,6 +402,38 @@ export const getCollectionSelect = async (account) => {
 export const addVideoToCollection = async (input) => {
     try {
         const response = await apiClient.put('/artUser/addVideoToCollection',input)
+        return response.data;
+    } catch (error) {
+        console.log('请求错误');
+    }
+};
+
+//picture
+export const getMirrors = async () => {
+    try {
+        const response = await apiClient.get('/picture/getMirrors')
+        return response.data;
+    } catch (error) {
+        console.log('请求错误');
+    }
+};
+
+export const addMirror = async (formData) => {
+    try {
+        const response = await apiClient.post('/picture/addMirror',formData,{
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+        return response.data;
+    } catch (error) {
+        console.log('请求错误');
+    }
+};
+
+export const deleteMirror = async (id) => {
+    try {
+        const response = await apiClient.delete(`/picture/deleteMirror/${id}`)
         return response.data;
     } catch (error) {
         console.log('请求错误');

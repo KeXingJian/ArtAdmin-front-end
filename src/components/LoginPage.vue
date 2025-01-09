@@ -77,12 +77,13 @@ export default {
 }
 
 .container {
+  user-select: none;
+  cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
   overflow: hidden;
-  background: var(--bgColor);
 }
 
 .show-password {
@@ -90,6 +91,7 @@ export default {
   --border: black;
   --inputColor: black;
   --outlineColor: rgb(60, 115, 235);
+  --background-image: url('@/static/img/bg6.jpg');
 }
 
 .shell {
@@ -98,8 +100,9 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: url('@/static/img/bg1.png');
+  background-image: var(--background-image);
   background-size: cover;
+  background-position: left bottom; /* 背景图片从左下角开始 */
 }
 form {
   transform: translate3d(0, 0, 0);
@@ -152,6 +155,7 @@ button[id=password] {
 }
 
 button {
+
   border: none;
 }
 
@@ -218,9 +222,10 @@ input:focus {
 }
 
 .eye {
+  color: black;
   width: var(--size);
   height: var(--size);
-  border: 2px solid var(--inputColor);
+  border: 2px solid black;
   border-radius: calc(var(--size) / 1.5) 0;
   transform: rotate(45deg);
 }
@@ -240,13 +245,13 @@ input:focus {
 .eye:before {
   width: 35%;
   height: 35%;
-  background-color: var(--inputColor);
+  background-color: black;
 }
 
 .eye:after {
   width: 65%;
   height: 65%;
-  border: 2px solid var(--inputColor);
+  border: 2px solid black;
   border-radius: 100%;
 }
 

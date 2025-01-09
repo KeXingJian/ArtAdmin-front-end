@@ -1,6 +1,32 @@
 :root {
     --body-color: #E4E9F7;
-    --shell-color: #B1D3DC;
+    --shell-color: linear-gradient(
+            to bottom right,
+            rgba(145, 222, 254, 0.8),
+            rgba(153, 192, 249, 0.8),
+            rgba(189, 182, 236, 0.8),
+            rgba(215, 179, 227, 0.8),
+            rgba(239, 179, 213, 0.8),
+            rgba(249, 188, 204, 0.8)
+    );
+    --shell-color-low: linear-gradient(
+            to bottom right,
+            rgba(145, 222, 254, 0.3),
+            rgba(153, 192, 249, 0.3),
+            rgba(189, 182, 236, 0.3),
+            rgba(215, 179, 227, 0.3),
+            rgba(239, 179, 213, 0.3),
+            rgba(249, 188, 204, 0.3)
+    );
+    --shell-color-high: linear-gradient(
+            to bottom right,
+            rgba(145, 222, 254),
+            rgba(153, 192, 249),
+            rgba(189, 182, 236),
+            rgba(215, 179, 227),
+            rgba(239, 179, 213),
+            rgba(249, 188, 204)
+    );
     --primary-color: #695CFE;
     --primary-color-light: #F6F5FF;
     --toggle-color: #DDD;
@@ -9,7 +35,11 @@
     --bgColor: rgba(0, 0, 0, 0.9);
     --inputColor: white;
     --border: rgb(255, 255, 255);
-    --background-image: url('@/static/img/bg2.png');
+    --background-image: url('@/static/img/bg7.jpg');
     --form-color: #FFFFFF;
     --album-with: 52%;
+    --me-bg: url('@/static/img/bg12(1).jpg');
+    --theme-color: rgba(239, 179, 213);
+    --tv-color: #FF7AB7;
+    --tv-inner-color: rgba(249, 188, 204);
 }

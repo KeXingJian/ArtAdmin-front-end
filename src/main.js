@@ -35,7 +35,6 @@ Vue.use(CheckboxGroup)
 Vue.use(CheckboxButton)
 
 
-
 new Vue({
   render: h => h(App),
   router,

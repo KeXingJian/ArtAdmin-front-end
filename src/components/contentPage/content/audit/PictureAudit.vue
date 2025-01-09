@@ -1,21 +1,16 @@
 <template>
   <section class="shell">
-    <div v-if="isAdd || isEdit" class="form animate__animated animate__backInDown">
+    <div v-if="isAdd" class="form animate__animated animate__backInDown">
       <div class="container-form">
-        <div class="card cart">
-          <label class="title">MIRROR FORM</label>
-          <div class="steps">
-            <div class="step">
-
-              <div class="promo">
-                <form class="form-desc">
-                  <input type="text" placeholder="DESC" class="input_field">
-                </form>
-              </div>
-              <hr>
-              <div class="container-load">
-                <div class="header-load">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <div class="card">
+          <div class="p">
+            <div class="card-introduce">
+              <div class="container-cover">
+                <div class="header">
+                  <div class="preview" v-if="selectedFile">
+                    <img :src="previewImage" alt="Preview"/>
+                  </div>
+                  <svg v-if="!isSelected" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                     <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
                     <g id="SVGRepo_iconCarrier">
@@ -26,7 +21,7 @@
                   </svg>
                   <p>Browse File to upload!</p>
                 </div>
-                <label for="file" class="footer-load">
+                <label for="file" class="footer">
                   <svg fill="#000000" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
                     <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                     <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -35,7 +30,7 @@
                       <path d="M18.153 6h-.009v5.342H23.5v-.002z"></path>
                     </g>
                   </svg>
-                  <p>Not selected file</p>
+                  <p>{{ selectedFileName || 'Not selected file' }}</p>
                   <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                     <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -49,16 +44,15 @@
                     </g>
                   </svg>
                 </label>
-                <input id="file" type="file">
+                <input id="file" type="file" accept="image/*" @change="onFileSelected">
+              </div>
+              <div class="checkout">
+                <div class="footer-checkout">
+                  <button class="checkout-btn to-Checkout" @click="addPicture">Checkout</button>
+                  <button class="checkout-btn close" @click="closeAdd">Close</button>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        <div class="card checkout">
-          <div class="footer">
-            <button class="checkout-btn">Checkout</button>
-            <button class="checkout-btn close" @click="closeAdd">Close</button>
           </div>
         </div>
       </div>
@@ -68,47 +62,31 @@
       <tr>
         <th><a href="#" @click.prevent class="to-font">mirror</a></th>
 
-        <th><a href="#" @click.prevent class="to-font">desc</a></th>
+        <th><a href="#" @click.prevent class="to-font">path</a></th>
         <th><a href="#" @click.prevent class="to-font">action</a></th>
       </tr>
       </thead>
       <tbody>
-      <tr v-for="(user) in paginatedUsers" :key="user.id">
+      <tr v-for="(mirror) in mirrors" :key="mirror.id">
         <td>
           <a href="#" @click.prevent class="to-font"><div class="img-box">
-            <img :src="user.mirror">
+            <img :src="'http://localhost:8080/video/image/0/'+mirror.path">
           </div></a>
 
         </td>
         <td>
-          <a href="#" @click.prevent class="to-font">{{ user.desc }}</a>
+          <a href="#" @click.prevent class="to-font">{{ mirror.path }}</a>
         </td>
 
         <td>
           <div class="action">
-            <div class="button">
-              <i class="iconfont icon-bianji" @click="toEdit"></i>
-            </div>
-            <div class="button">
+            <div @click="deletePicture(mirror.id)" class="button">
               <i class="iconfont icon-cuowu"></i>
             </div>
           </div>
         </td>
       </tr>
       </tbody>
-      <tfoot class="sticky-footer">
-      <tr>
-        <td colspan="7" style="text-align: center;">
-          <el-pagination
-              layout="prev, pager, next"
-              :total="users.length"
-              :page-size="pageSize"
-              :current-page="currentPage"
-              @current-change="handlePageChange"
-          ></el-pagination>
-        </td>
-      </tr>
-      </tfoot>
 
     </table>
   </section>
@@ -116,96 +94,85 @@
 
 
 <script>
+import {addMirror, deleteMirror, getMirrors} from "@/api";
+
 export default {
   name: "PictureAudit",
   data() {
     return {
       showMenu: false,
       filter: false,
-      users: [
-        {
-          mirror: require('@/static/img/mirror/20240928234109681.png'),
-          desc: '猫!',
-
-        },
-        {
-          mirror: require('@/static/img/mirror/20240928234109681.png'),
-          desc: '猫!',
-
-        },
-        {
-          mirror: require('@/static/img/mirror/20240928234109681.png'),
-          desc: '猫!',
-
-        },
-        {
-          mirror: require('@/static/img/mirror/20240928234109681.png'),
-          desc: '猫!',
-
-        },
-        {
-          mirror: require('@/static/img/mirror/20240928234109681.png'),
-          desc: '猫!',
-
-        },
-        {
-          mirror: require('@/static/img/mirror/20240928234109681.png'),
-          desc: '猫!',
-
-        },
-        {
-          mirror: require('@/static/img/mirror/20240928234109681.png'),
-          desc: '猫!',
-
-        },
-        {
-          mirror: require('@/static/img/mirror/20240928234109681.png'),
-          desc: '猫!',
-
-        },
-        {
-          mirror: require('@/static/img/mirror/20240928234109681.png'),
-          desc: '猫!',
-
-        },
-        {
-          mirror: require('@/static/img/mirror/20240928234109681.png'),
-          desc: '猫!',
-
-        },
-
-
-      ],
-      currentPage: 1,
-      pageSize: 10, // 每页显示的条目数
-      isEdit:false,
+      mirrors:null,
       isAdd:false,
+
+      previewImage: null,
+      selectedFile: null,
+      selectedFileName: '',
+      isSelected: false,
     }
   },
-  computed: {
-    paginatedUsers() {
-      const start = (this.currentPage - 1) * this.pageSize;
-      const end = start + this.pageSize;
-      return this.users.slice(start, end);
-    },
-  },
+
 
   methods: {
-    handlePageChange(page) {
-      this.currentPage = page;
+    onFileSelected(event) {
+      this.selectedFile = event.target.files[0];
+      this.selectedFileName = this.selectedFile ? this.selectedFile.name : '';
+      const maxSize = 1024 * 1024 * 20;
+      if (this.selectedFile && this.selectedFile.size > maxSize) {
+        alert('File size exceeds the maximum limit of 20MB.');
+        this.selectedFile = null;
+        this.selectedFileName = '';
+        return;
+      }
+
+      if (this.selectedFile) {
+        this.isSelected = true;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.previewImage = e.target.result;
+        };
+        reader.readAsDataURL(this.selectedFile);
+      }
+
     },
+    async addPicture() {
+      if (!this.isSelected) {
+        alert("请上传图片")
+        return
+      }
+      const formData = new FormData();
+      formData.append('file', this.selectedFile);
+      const response = await addMirror(formData);
+      alert(response.data)
+      this.closeAdd();
+      const response1 = await getMirrors();
+      this.mirrors = response1.data;
+
+
+    },
+
     closeAdd() {
       this.isAdd = false;
-      this.isEdit = false;
+      this.previewImage = null;
+      this.selectedFile = null;
+      this.selectedFileName = '';
+      this.isSelected= false;
     },
-    toEdit(){
-      this.isEdit=true;
+    async deletePicture(id) {
+      const response = await deleteMirror(id);
+      alert(response.data);
+      const response1 = await getMirrors();
+      this.mirrors = response1.data;
     }
+
   },
-  mounted() {
+  async mounted() {
     this.$bus.$on('toAdd', () => {
       this.isAdd = true;
     })
+    const response = await getMirrors();
+    this.mirrors = response.data;
+
   },
   beforeDestroy() {
     this.$bus.$off('toAdd');
@@ -221,27 +188,21 @@ export default {
   border-radius: 10px;
   overflow: auto;
 }
-
 .shell::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
-
 table {
   width: 100%;
 }
-
 td img {
   height: 100px;
 }
-
-
 table, th, td {
   border-collapse: collapse;
   padding: 10px;
   text-align: center;
 }
-
 thead th {
   position: sticky;
   top: 0;
@@ -253,37 +214,21 @@ thead th {
   color: #1B1F23;
 
 }
-
 tbody tr {
   background-color: #bdb6ec
 }
-
 tbody tr:nth-child(even) {
   background-color: #FFF;
 
 }
-
-
 el-tag {
   margin-right: 4px;
 }
-
-
-.sticky-footer {
-  position: sticky;
-  bottom: 0;
-  background-color: white;
-  padding: 10px;
-  border-top: 1px solid #ddd;
-}
-
-
 .button {
   width: 25%;
   height: 100%;
   text-align: center;
 }
-
 .button i {
   display: block;
   color: #3d405b;
@@ -291,11 +236,9 @@ el-tag {
   line-height: 49px;
   transition: .2s;
 }
-
 .button i:hover {
   color: #f4f1de;
 }
-
 .action {
   margin-left: 32px;
 
@@ -311,160 +254,95 @@ el-tag {
 
 .form {
   position: absolute;
-  z-index: 999;
   margin-left: 28%;
+  z-index: 999;
 
 }
-
 .container-form {
   margin-left: 4%;
-  display: grid;
-  grid-template-columns: auto;
-  width: 500px;
+  width: 400px;
   max-height: 600px;
-  gap: 0;
 }
-
-hr {
-  height: 1px;
-  background-color: rgba(16, 86, 82, .75);;
-  border: none;
+.container-form::-webkit-scrollbar {
+  display: none;
 }
-
 .card {
   width: 100%;
-  background: rgb(255, 250, 235);
-  box-shadow: 0 187px 75px rgba(0, 0, 0, 0.01), 0 105px 63px rgba(0, 0, 0, 0.05), 0 47px 47px rgba(0, 0, 0, 0.09), 0 12px 26px rgba(0, 0, 0, 0.1), 0 0 0 rgba(0, 0, 0, 0.1);
+  height: 100%;
+  border-radius: 4px;
+  background: #212121;
+  gap: 5px;
+  padding: .4em;
 }
-
-.title {
-  width: 100%;
-  height: 40px;
+.card .p {
+  height: 100%;
+  flex: 1;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all .5s;
+  background: #17141D;
+  border: 1px solid #ff5a91;
+  overflow: auto;
+}
+.card .p::-webkit-scrollbar {
+  display: none;
+}
+.card .p:hover {
+  flex: 8;
+}
+.card_data span {
+  color: #9147ff;
+  margin-top: auto;
+  font-size: 0.9em;
+  transition: 0.2s ease-in-out;
+  cursor: pointer;
+}
+.card_data span:hover {
+  color: #28aea5;
+  text-decoration: underline;
+}
+.card-introduce {
+  display: flex;
   position: relative;
-  display: flex;
-  align-items: center;
-  padding-left: 20px;
-  border-bottom: 1px solid rgba(16, 86, 82, .75);;
-  font-weight: 700;
-  font-size: 11px;
-  color: #000000;
-}
-
-.cart {
-  border-radius: 19px 19px 0 0;
-}
-
-.cart .steps {
-  display: flex;
   flex-direction: column;
-  padding: 20px;
+  height: auto;
+  width: 92%;
+  padding: 1rem;
+  border-radius: 16px;
+  background: #17141d;
+  box-shadow: -1rem 0 3rem #00000067;
+  transition: .2s;
+  font-family: 'Inter', sans-serif;
 }
-
-.cart .steps .step {
-  display: grid;
-  gap: 10px;
+.card-header p {
+  font-size: 22px;
+  margin: 0 0 1rem;
+  color: #7a7a8c;
 }
-
-.cart .steps .step span {
-  font-size: 13px;
-  font-weight: 600;
-  color: #000000;
-  margin-bottom: 8px;
-  display: block;
-}
-
-.cart .steps .step p {
-  font-size: 11px;
-  font-weight: 600;
-  color: #000000;
-}
-
-.promo form {
-  display: grid;
-  grid-template-columns: 1fr 80px;
-  gap: 10px;
-  padding: 0;
-}
-
-.input_field {
-  width: auto;
-  height: 36px;
-  padding: 0 0 0 12px;
-  border-radius: 5px;
-  outline: none;
-  border: 1px solid rgb(16, 86, 82);
-  background-color: rgb(251, 243, 228);
-  transition: all 0.3s cubic-bezier(0.15, 0.83, 0.66, 1);
-}
-
-.input_field:focus {
-  border: 1px solid transparent;
-  box-shadow: 0 0 0 2px rgb(251, 243, 228);
-  background-color: rgb(201, 193, 178);
-}
-
-.promo form button {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  padding: 10px 18px;
-  gap: 10px;
-  width: 100%;
-  height: 36px;
-  background: rgba(16, 86, 82, .75);
-  box-shadow: 0 0.5px 0.5px #F3D2C9, 0 1px 0.5px rgba(239, 239, 239, 0.5);
-  border-radius: 5px;
-  border: 0;
+.tags a {
   font-style: normal;
-  font-weight: 600;
-  font-size: 12px;
-  line-height: 15px;
-  color: #000000;
+  font-weight: 700;
+  color: #7a7a8c;
+  text-transform: uppercase;
+  font-size: .66rem;
+  border: 3px solid #28242f;
+  border-radius: 2rem;
+  padding: .2rem .85rem .25rem;
+  position: relative;
 }
-
-.payments .details span:nth-child(odd) {
-  font-size: 12px;
-  font-weight: 600;
-  color: #000000;
-  margin: auto auto auto 0;
+.tags a:hover {
+  background: linear-gradient(90deg, #ff8a00, #e52e71);
+  text-shadow: none;
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  background-clip: text;
+  border-color: white;
 }
-
-.payments .details span:nth-child(even) {
-  font-size: 13px;
-  font-weight: 600;
-  color: #000000;
-  margin: auto 0 auto auto;
-}
-
-.checkout .footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 10px 10px 20px;
-  background-color: rgba(16, 86, 82, .5);
-}
-
-.checkout .checkout-btn {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  width: 150px;
-  height: 36px;
-  background: rgba(16, 86, 82, .55);
-  box-shadow: 0 0.5px 0.5px rgba(16, 86, 82, .75), 0 1px 0.5px rgba(16, 86, 82, .75);;
-  border-radius: 7px;
-  border: 1px solid rgb(16, 86, 82);;
-  color: #000000;
-  font-size: 13px;
-  font-weight: 600;
-  transition: all 0.3s cubic-bezier(0.15, 0.83, 0.66, 1);
-}
-
-
-.container-load {
-  height: 200px;
+.container-cover {
+  margin-left: 7%;
+  height: 300px;
   width: 300px;
   border-radius: 10px;
   box-shadow: 4px 4px 30px rgba(0, 0, 0, .2);
@@ -475,10 +353,8 @@ hr {
   padding: 10px;
   gap: 5px;
   background-color: rgba(0, 110, 255, 0.041);
-  margin-left: 18%;
 }
-
-.header-load {
+.header {
   flex: 1;
   width: 100%;
   border: 2px dashed royalblue;
@@ -488,17 +364,14 @@ hr {
   justify-content: center;
   flex-direction: column;
 }
-
-.header-load svg {
+.header svg {
   height: 100px;
 }
-
-.header-load p {
+.header p {
   text-align: center;
   color: black;
 }
-
-.footer-load {
+.footer {
   background-color: rgba(0, 110, 255, 0.075);
   width: 100%;
   height: 40px;
@@ -511,8 +384,7 @@ hr {
   color: black;
   border: none;
 }
-
-.footer-load svg {
+.footer svg {
   height: 130%;
   fill: royalblue;
   background-color: rgba(70, 66, 66, 0.103);
@@ -521,17 +393,36 @@ hr {
   cursor: pointer;
   box-shadow: 0 2px 30px rgba(0, 0, 0, 0.205);
 }
-
-.footer-load p {
+.footer p {
   flex: 1;
   text-align: center;
 }
-
+.close {
+  background: #E74D4D !important;
+  float: right;
+}
 #file {
   display: none;
 }
-
-.close {
-  background: #E74D4D !important;
+.to-Checkout {
+  background: green !important;
 }
+.footer-checkout{
+  width: 100%;
+}
+.footer-checkout button {
+  width: 100px;
+  height: 40px;
+}
+.preview {
+  width: 100%;
+  margin-top: 10px;
+  text-align: center;
+}
+.preview img {
+  max-height: 180px;
+  border: 1px solid #ccc;
+  padding: 5px;
+}
+
 </style>

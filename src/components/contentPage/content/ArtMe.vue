@@ -131,7 +131,7 @@
 <script>
 import BackgroundPage from "@/components/contentPage/content/BackgroundPage.vue";
 import {getUserInfo, updateUser, upsertCollection} from "@/api";
-import {getAccount} from "@/utils";
+import {getAccount, getURL} from "@/utils";
 
 export default {
   name: "ArtMe",
@@ -194,7 +194,7 @@ export default {
       this.editCollection.name=collection.name
     },
     getImageUrl(uuid) {
-      return `http://localhost:8080/video/image/2/${uuid}`;
+      return getURL()+`video/image/2/${uuid}`;
     },
     //用户上传校验
     onFileSelected(event) {
@@ -305,7 +305,7 @@ export default {
   text-decoration: none;
 }
 .content {
-  background-image: url('@/static/img/sbpk.jpg');
+  background-image: var(--me-bg);
   background-size: cover;
   overflow: auto;
   border-radius: 10px;

@@ -6,10 +6,10 @@
         <div class="shell">
           <div @click="toCollection(artist.videos)" v-for="(artist) in artists" :key="artist.id" class="card">
             <div class="box">
-              <img :src="'http://localhost:8080/video/image/1/'+artist.picture.path" :alt="artist.description"/>
+              <img :src="url+'video/image/1/'+artist.picture.path" :alt="artist.description"/>
             </div>
             <div class="character">
-              <img :src="'http://localhost:8080/video/image/1/'+artist.picture.path" :alt="artist.description"/>
+              <img :src="url+'video/image/1/'+artist.picture.path" :alt="artist.description"/>
             </div>
             <h4>{{ artist.name }}</h4>
           </div>
@@ -23,9 +23,9 @@
             <td colspan="7" style="text-align: center;">
               <el-pagination
                   layout="prev, pager, next"
-                  :total="total"
+                  :total="this.total"
                   :page-size="8"
-                  :current-page="page.pageIndex"
+                  :current-page="this.page.pageIndex"
                   @current-change="handlePageChange"
               ></el-pagination>
             </td>
@@ -42,6 +42,7 @@
 
 import BackgroundPage from "@/components/contentPage/content/BackgroundPage.vue";
 import {getArtistCollections} from "@/api";
+import {getURL} from "@/utils";
 
 export default {
   name: 'ArtIllustrated',
@@ -54,13 +55,14 @@ export default {
         pageIndex: 1,
         pageSize: 8,
       },
-      videos:null
+      videos:null,
+      url:getURL()
     };
   },
   methods: {
-    handlePageChange(page) {
+    async handlePageChange(page) {
       this.page.pageIndex = page;
-      const response = getArtistCollections(this.page);
+      const response = await getArtistCollections(this.page);
       this.total = response.data.totalRowCount;
       this.artists = response.data.rows;
     },
@@ -113,15 +115,7 @@ export default {
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  background-image: linear-gradient(
-      to bottom right,
-      rgba(145, 222, 254, 0.9),
-      rgba(153, 192, 249, 0.9),
-      rgba(189, 182, 236, 0.9),
-      rgba(215, 179, 227, 0.9),
-      rgba(239, 179, 213, 0.9),
-      rgba(249, 188, 204, 0.9)
-  );
+  background-image: var(--shell-color-low);
   background-size: cover;
 }
 .shell-box{
@@ -157,7 +151,7 @@ export default {
   transition: all .1s cubic-bezier(0.165, 0.84, 0.44, 1);
   overflow: hidden;
   border-radius: 10px;
-  background-image: linear-gradient(180deg, #a18cd1, #fcaae55c, #141414ce);
+  background: var(--shell-color-high);
 }
 .box > img {
   object-fit: contain;
@@ -174,7 +168,7 @@ export default {
 .card:hover > .box {
   transform: scaleY(1.5);
   background-image: initial;
-  background-color: #7d419f;
+  background-color:  var(--theme-color);
   z-index: 2;
   cursor: pointer;
 }
